@@ -4,7 +4,9 @@ Question: before this work, had anyone shown R(B_66, B_67) = 267, that is, given
 vertices with no book B_66 whose complement has no book B_67 (the case n = 67 of Wesley's conjecture
 R(B_{n-1}, B_n) = 4n - 1)?
 
-Checked 14 October 2026, 13:30–14:40 UTC, and again 15:15–15:40 UTC.
+Checked 14 October 2026, 13:30–14:40 UTC, and again 15:15–15:40 UTC. **Answer: yes.** The check
+missed the data repository of the Station paper (last row of the table), which settles n = 67 with the
+same graph; it was found at about 18:30 UTC the same day.
 
 | Source | What was checked | Result |
 |---|---|---|
@@ -19,8 +21,10 @@ Checked 14 October 2026, 13:30–14:40 UTC, and again 15:15–15:40 UTC.
 | Zenodo API | `"book Ramsey"`, `"book graphs" Ramsey` | one unrelated record (quadrilateral–book Ramsey numbers) |
 | OpenRefute (the-omega-institute/trureturing issues) | issue search for "book Ramsey" | no issue |
 | Web search | the conjecture, "R(B_66,B_67)", "n = 67", the Dualverse claim, a Manifold market on the Szekeres family | nothing beyond the sources above |
+| S. Chung, W. Du, W. J. Wesley, Station data v2 (https://github.com/dualverse-ai/station_data_v2, linked from arXiv:2608.23691; first public commit `606e325f`, 24 August 2026), `artifacts/book_ramsey/verification.ipynb` Section 5.1 and `book_ramsey_certificates.npz` | the notebook, the certificate array `finite_n67` and the ledger of Section 6.1 | **Theorem 5.1: R(B_66, B_67) = 267**, by a 266-vertex certificate (SHA-256 `819dbb31…a1cf1`), "a regular two-fibre coloring on 266 vertices built from multiplier orbits over Z_133". It is isomorphic to the graph of this repository (`verification/python/station_isomorphism.py`). The ledger lists 58, 59, 60, 64, 65, 68, 72, 73, 76, 78, 80, 81, 84, 88, 89, 92, 93, 94, 96 and 100 as open for n ≤ 100. |
 
-Conclusion: as of 14 October 2026 we found no earlier proof that R(B_66, B_67) = 267. The values
-of n ≤ 100 that none of the sources above covers are 58, 59, 60, 64, 65, 67, 68, 72, 73, 76, 78, 80,
-81, 84, 88, 89, 92, 93, 94, 96 and 100; this repository settles n = 67, and the others stay open
-here.
+Conclusion: R(B_66, B_67) = 267 was first shown by Chung, Du and Wesley in the Station data of
+24 August 2026, by the same graph up to isomorphism. This repository found that graph independently
+and adds an explicit description by multiplier orbits, a proof checkable by hand and a Lean 4 kernel
+check; it does not settle a new value. The values n ≤ 100 that none of the sources above covers are
+58, 59, 60, 64, 65, 68, 72, 73, 76, 78, 80, 81, 84, 88, 89, 92, 93, 94, 96 and 100.

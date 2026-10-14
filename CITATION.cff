@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this work, please cite it as below."
-title: "The book Ramsey number R(B_66, B_67)"
+title: "A hand-checkable proof that R(B_66, B_67) = 267"
 type: software
 authors:
   - family-names: Bhattacharjee
@@ -27,11 +27,13 @@ keywords:
   - multiplier group
   - Lean 4
 abstract: >-
-  R(B_66, B_67) = 267, the case n = 67 of Wesley's conjecture R(B_{n-1}, B_n) = 4n - 1, which no
-  earlier construction covered. The extremal graph is a two-block circulant graph over Z_133 whose
-  connection sets are unions of orbits of the cube roots of unity modulo 133. The repository holds
-  the paper, a Lean 4 kernel check of the graph (standard axioms only), independent checks in C and
-  Python, the search, and a dated priority check.
+  A hand-checkable proof that R(B_66, B_67) = 267, the case n = 67 of Wesley's conjecture
+  R(B_{n-1}, B_n) = 4n - 1, first shown by Chung, Du and Wesley in the Station data of 24 August 2026
+  by a 266-vertex certificate. Their graph is, up to isomorphism, a two-block circulant graph over
+  Z_133 whose connection sets are unions of orbits of the cube roots of unity modulo 133. The
+  repository holds the paper, a Lean 4 kernel check of the graph (standard axioms only), independent
+  checks in C and Python, the isomorphism with the Station certificate, the search, and a dated
+  priority check.
 references:
   - type: article
     title: "On Ramsey numbers for books"
@@ -55,3 +57,14 @@ references:
     journal: "Discrete Mathematics"
     volume: 349
     doi: "10.1016/j.disc.2025.114913"
+  - type: data
+    title: "Station data v2: Book Ramsey verification notebook"
+    authors:
+      - family-names: Chung
+        given-names: Stephen
+      - family-names: Du
+        given-names: Wenyu
+      - family-names: Wesley
+        given-names: William J.
+    year: 2026
+    url: "https://github.com/dualverse-ai/station_data_v2"
