@@ -1,0 +1,58 @@
+name: two-phase search
+
+# Searches for two-block circulant graphs proving R(B_{n-1}, B_n) = 4n - 1 for the values of n
+# listed in search/two_phase/plan.json. Runs when that file changes on the search branch, or by hand.
+
+on:
+  push:
+    branches: [claude/project-thread-a1j712]
+    paths: [search/two_phase/plan.json]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: m
+        run: python3 search/two_phase/plan.py >> "$GITHUB_OUTPUT"
+
+  search:
+    needs: plan
+    name: n = ${{ matrix.n }}, job ${{ matrix.job }} (T ${{ matrix.t0 }} to ${{ matrix.t1 }}, mu ${{ matrix.mu }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install NumPy and SciPy
+        run: pip install --quiet numpy scipy
+      - name: Build
+        working-directory: search/two_phase
+        run: |
+          gcc -O3 -march=native -o phaseA phaseA.c -lm
+          gcc -O3 -march=native -o bsa bsa.c -lm
+      - name: Search
+        working-directory: search/two_phase
+        env:
+          ALPSTEPS: ${{ matrix.alpsteps }}
+          BSTEPS: ${{ matrix.bsteps }}
+          T0: ${{ matrix.t0 }}
+          T1: ${{ matrix.t1 }}
+          MU: ${{ matrix.mu }}
+          PF: ${{ matrix.pf }}
+        run: ./drive.sh ${{ matrix.n }} ${{ matrix.job }} ${{ matrix.minutes }} ${{ matrix.perA }} $(nproc) | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Keep the outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: two-phase-n${{ matrix.n }}-job${{ matrix.job }}
+          path: search/two_phase/out/
