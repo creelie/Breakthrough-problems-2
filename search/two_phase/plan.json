@@ -1,8 +1,5 @@
 {"runs": [
-  {"n": 46, "jobs": 1, "minutes": 90, "perA": 20, "bsteps": 5000000, "hsec": 60},
-  {"n": 52, "jobs": 1, "minutes": 240, "perA": 40, "bsteps": 6000000, "hsec": 90},
-  {"n": 56, "jobs": 1, "minutes": 330, "perA": 60, "bsteps": 8000000, "hsec": 120},
-  {"n": 58, "jobs": 3, "minutes": 330, "perA": 60, "bsteps": 8000000, "hsec": 120},
-  {"n": 58, "jobs": 2, "minutes": 330, "perA": 60, "bsteps": 8000000, "hsec": 120, "mu": 0.1},
-  {"n": 59, "jobs": 2, "minutes": 330, "perA": 60, "bsteps": 8000000, "hsec": 120},
-  {"n": 59, "jobs": 2, "minutes": 330, "perA": 60, "bsteps": 8000000, "hsec": 120, "mu": 0.1}]}
+  {"n": 52, "jobs": 1, "minutes": 240, "perA": 60, "bsteps": 40000000, "t0": 0.5, "t1": 0.5, "hsec": 300},
+  {"n": 56, "jobs": 1, "minutes": 330, "perA": 60, "bsteps": 40000000, "t0": 0.5, "t1": 0.5, "hsec": 300},
+  {"n": 58, "jobs": 5, "minutes": 330, "perA": 60, "bsteps": 40000000, "t0": 0.5, "t1": 0.5, "hsec": 300},
+  {"n": 59, "jobs": 5, "minutes": 330, "perA": 60, "bsteps": 40000000, "t0": 0.5, "t1": 0.5, "hsec": 300}]}
