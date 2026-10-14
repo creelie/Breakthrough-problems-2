@@ -124,7 +124,8 @@ minutes on a shared four-core machine, with up to about 2 GB of memory per Lean 
 No new value is settled here. The conjecture R(B_{n−1}, B_n) = 4n − 1 stays open in general, and
 for n ≤ 100 at 58, 59, 60, 64, 65, 68, 72, 73, 76, 78, 80, 81, 84, 88, 89, 92, 93, 94, 96 and 100;
 the same orbit search did not find examples there for the subgroups and time limits tried. For even
-n the two-block shape cannot occur at all, since a symmetric set A avoiding 0 has even size n − 1.
+n the regular shape Γ(A, B) cannot occur, since a symmetric set A avoiding 0 has even size; there
+Turturean's examples take |A| = n and |B| = n − 1, which gives a graph that is not regular.
 
 ## Author
 
