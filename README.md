@@ -1,10 +1,11 @@
 # A hand-checkable proof that R(B_66, B_67) = 267
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23373629.svg)](https://doi.org/10.5281/zenodo.23373629)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23377549.svg)](https://doi.org/10.5281/zenodo.23377549)
 
-Release v1.0.0 is archived on Zenodo under the version DOI
-[10.5281/zenodo.23373629](https://doi.org/10.5281/zenodo.23373629); the concept DOI of all versions is
-[10.5281/zenodo.23373628](https://doi.org/10.5281/zenodo.23373628).
+Release v1.0.1 is archived on Zenodo under the version DOI
+[10.5281/zenodo.23377549](https://doi.org/10.5281/zenodo.23377549); the concept DOI of all versions is
+[10.5281/zenodo.23373628](https://doi.org/10.5281/zenodo.23373628). Release v1.0.0
+([10.5281/zenodo.23373629](https://doi.org/10.5281/zenodo.23373629)) is superseded.
 
 **Correction.** Release v1.0.0 presented R(B_66, B_67) = 267 as a new value. It is not: Chung, Du and
 Wesley proved it in the data accompanying their Station paper, published on 24 August 2026
