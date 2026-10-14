@@ -96,6 +96,8 @@ preprint/                  the paper (amsart) and its TikZ figures
 dist/                      the paper as PDF, as LaTeX with PNG figures, and as an arXiv tarball
 scripts/                   gen_lean.py, gen_figures.py, build_paper.sh, run_all.sh, audit_axioms.py
 PRIORITY-CHECK.md          the dated check that n = 67 was open
+MasterBookRamsey67_masterzipfinal2.zip  the paper, the Discrete Mathematics submission, the priority
+                           check and a snapshot of this repository
 ```
 
 To reproduce: `scripts/run_all.sh` (C compiler, Python 3; OR-Tools for the search),
