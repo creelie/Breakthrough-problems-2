@@ -1,0 +1,49 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "The book Ramsey number R(B_66, B_67)"
+type: software
+authors:
+  - family-names: Bhattacharjee
+    given-names: Deep
+    orcid: "https://orcid.org/0000-0003-0466-750X"
+    affiliation: "Formerly, Electro-Gravitational Space Propulsion Laboratory (EGSPL), Bhubaneswar, Odisha 751030, India"
+    email: d.bhattacharjee@erl-forschung.de
+version: 1.0.0
+date-released: 2026-10-14
+license: MIT
+repository-code: "https://github.com/creelie/Breakthrough-problems-2"
+keywords:
+  - Ramsey number
+  - book graph
+  - block-circulant graph
+  - multiplier group
+  - Lean 4
+abstract: >-
+  R(B_66, B_67) = 267, the case n = 67 of Wesley's conjecture R(B_{n-1}, B_n) = 4n - 1, which no
+  earlier construction covered. The extremal graph is a two-block circulant graph over Z_133 whose
+  connection sets are unions of orbits of the cube roots of unity modulo 133. The repository holds
+  the paper, a Lean 4 kernel check of the graph (standard axioms only), independent checks in C and
+  Python, the search, and a dated priority check.
+references:
+  - type: article
+    title: "On Ramsey numbers for books"
+    authors:
+      - family-names: Rousseau
+        given-names: Cecil C.
+      - family-names: Sheehan
+        given-names: John
+    year: 1978
+    journal: "Journal of Graph Theory"
+    volume: 2
+    start: 77
+    end: 87
+    doi: "10.1002/jgt.3190020110"
+  - type: article
+    title: "Lower bounds for book Ramsey numbers"
+    authors:
+      - family-names: Wesley
+        given-names: William J.
+    year: 2026
+    journal: "Discrete Mathematics"
+    volume: 349
+    doi: "10.1016/j.disc.2025.114913"

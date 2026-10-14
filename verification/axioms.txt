@@ -1,0 +1,5 @@
+'BookRamsey.N67.no_red_book' depends on axioms: [propext, Classical.choice, Quot.sound]
+'BookRamsey.N67.no_blue_book' depends on axioms: [propext, Classical.choice, Quot.sound]
+'BookRamsey.N67.adj_symm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'BookRamsey.N67.adj_irrefl' depends on axioms: [propext, Classical.choice, Quot.sound]
+'BookRamsey.N67.lower_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
