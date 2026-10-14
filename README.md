@@ -1,5 +1,11 @@
 # The book Ramsey number R(B_66, B_67)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23373629.svg)](https://doi.org/10.5281/zenodo.23373629)
+
+Release v1.0.0 is archived on Zenodo under the version DOI
+[10.5281/zenodo.23373629](https://doi.org/10.5281/zenodo.23373629); the concept DOI of all versions is
+[10.5281/zenodo.23373628](https://doi.org/10.5281/zenodo.23373628).
+
 The book B_k is the graph K_2 + K̄_k: k triangles sharing one edge. Rousseau and Sheehan,
 *On Ramsey numbers for books*, J. Graph Theory 2 (1978), 77–87,
 [doi:10.1002/jgt.3190020110](https://doi.org/10.1002/jgt.3190020110), proved
