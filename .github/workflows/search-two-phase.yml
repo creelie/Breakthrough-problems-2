@@ -24,7 +24,7 @@ jobs:
 
   search:
     needs: plan
-    name: n = ${{ matrix.n }}, job ${{ matrix.job }} (T ${{ matrix.t0 }} to ${{ matrix.t1 }}, mu ${{ matrix.mu }})
+    name: n = ${{ matrix.n }}, job ${{ matrix.job }} (${{ matrix.sel }}, T ${{ matrix.t0 }} to ${{ matrix.t1 }}, mu ${{ matrix.mu }})
     runs-on: ubuntu-latest
     timeout-minutes: 355
     strategy:
@@ -39,10 +39,13 @@ jobs:
         working-directory: search/two_phase
         run: |
           gcc -O3 -march=native -o phaseA phaseA.c -lm
+          gcc -O3 -march=native -o phaseH phaseH.c -lm
           gcc -O3 -march=native -o bsa bsa.c -lm
       - name: Search
         working-directory: search/two_phase
         env:
+          SEL: ${{ matrix.sel }}
+          HSEC: ${{ matrix.hsec }}
           ALPSTEPS: ${{ matrix.alpsteps }}
           BSTEPS: ${{ matrix.bsteps }}
           T0: ${{ matrix.t0 }}

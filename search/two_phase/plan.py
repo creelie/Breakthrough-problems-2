@@ -8,6 +8,7 @@ for r in plan['runs']:
         include.append({'n': r['n'], 'job': job, 'minutes': r['minutes'], 'perA': r['perA'],
                         'bsteps': r['bsteps'], 'alpsteps': r.get('alpsteps', 20000),
                         't0': r.get('t0', 1.0), 't1': r.get('t1', 0.05), 'mu': r.get('mu', 0),
-                        'pf': r.get('pf', 0.3)})
+                        'pf': r.get('pf', 0.3), 'sel': r.get('sel', 'ils'),
+                        'hsec': r.get('hsec', 120)})
         job += 1
 print('matrix=' + json.dumps({'include': include}))
