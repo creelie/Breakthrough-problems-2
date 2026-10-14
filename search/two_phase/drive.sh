@@ -5,7 +5,7 @@
 # or SEL=ils (default), `workers` parallel runs of phaseH (iterated local search on the slack-volume
 # score) for HSEC seconds, keeping the best; then `workers` parallel runs of bsa (cross set B)
 # for minutes_per_A minutes.
-# Environment: SEL, HSEC, ASTEPS, ALPSTEPS, BSTEPS, T0, T1, MU, PF.
+# Environment: SEL, HSEC, HR, HTOL, ASTEPS, ALPSTEPS, BSTEPS, T0, T1, MU, PF.
 set -u
 cd "$(dirname "$0")"
 n=$1; job=$2; total=$3; perA=$4; W=$5
@@ -19,7 +19,7 @@ while [ $(( end - $(date +%s) )) -gt 300 ]; do
     g=""
   else
     for w in $(seq 1 $W); do
-      ./phaseH $n $(( seed*10 + w )) ${HSEC:-120} 3 0.5 out/H_${n}_${seed}_${w}.txt > out/H_${n}_${seed}_${w}.log &
+      ./phaseH $n $(( seed*10 + w )) ${HSEC:-300} ${HR:-4} ${HTOL:-1.0} out/H_${n}_${seed}_${w}.txt > out/H_${n}_${seed}_${w}.log &
     done
     wait
     best=$(sort -k3 -g -r out/H_${n}_${seed}_*.log | head -1)
