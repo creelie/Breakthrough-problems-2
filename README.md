@@ -1,5 +1,11 @@
 # The book Ramsey number R(B_66, B_67)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23373629.svg)](https://doi.org/10.5281/zenodo.23373629)
+
+Release v1.0.0 is archived on Zenodo under the version DOI
+[10.5281/zenodo.23373629](https://doi.org/10.5281/zenodo.23373629); the concept DOI of all versions is
+[10.5281/zenodo.23373628](https://doi.org/10.5281/zenodo.23373628).
+
 The book B_k is the graph K_2 + K̄_k: k triangles sharing one edge. Rousseau and Sheehan,
 *On Ramsey numbers for books*, J. Graph Theory 2 (1978), 77–87,
 [doi:10.1002/jgt.3190020110](https://doi.org/10.1002/jgt.3190020110), proved
@@ -90,6 +96,8 @@ preprint/                  the paper (amsart) and its TikZ figures
 dist/                      the paper as PDF, as LaTeX with PNG figures, and as an arXiv tarball
 scripts/                   gen_lean.py, gen_figures.py, build_paper.sh, run_all.sh, audit_axioms.py
 PRIORITY-CHECK.md          the dated check that n = 67 was open
+MasterBookRamsey67_masterzipfinal2.zip  the paper, the Discrete Mathematics submission, the priority
+                           check and a snapshot of this repository
 ```
 
 To reproduce: `scripts/run_all.sh` (C compiler, Python 3; OR-Tools for the search),
