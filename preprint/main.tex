@@ -22,16 +22,17 @@
 \newtheorem{remark}[theorem]{Remark}
 
 \numberwithin{equation}{section}
+\raggedbottom
 
 \newcommand{\doi}[1]{\href{https://doi.org/#1}{\nolinkurl{doi:#1}}}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\NN}{\operatorname{N}}
 \newcommand{\ind}[1]{[\,#1\,]}
-\hypersetup{pdftitle={The book Ramsey number R(B66,B67)},pdfauthor={Deep Bhattacharjee}}
+\hypersetup{pdftitle={A hand-checkable proof that R(B66,B67)=267},pdfauthor={Deep Bhattacharjee}}
 
 \begin{document}
 
-\title[The book Ramsey number $R(B_{66},B_{67})$]{The book Ramsey number $R(B_{66},B_{67})$}
+\title[A hand-checkable proof that $R(B_{66},B_{67})=267$]{A hand-checkable proof that $R(B_{66},B_{67})=267$}
 
 \author{Deep Bhattacharjee}
 \address{Formerly, Electro-Gravitational Space Propulsion Laboratory (EGSPL),\newline Bhubaneswar, Odisha 751030, India}
@@ -44,7 +45,7 @@
 \keywords{Ramsey number, book graph, block-circulant graph, multiplier group}
 
 \begin{abstract}
-We prove that $R(B_{66},B_{67})=267$, the case $n=67$ of Wesley's conjecture $R(B_{n-1},B_n)=4n-1$, which no earlier construction covered. The extremal graph is a two-block circulant graph over $\Z_{133}$ whose connection sets are unions of orbits of the cube roots of unity modulo $133$.
+Chung, Du and Wesley showed that $R(B_{66},B_{67})=267$, the case $n=67$ of Wesley's conjecture $R(B_{n-1},B_n)=4n-1$, by a $266$-vertex certificate. We describe their graph as a two-block circulant graph over $\Z_{133}$ invariant under the cube roots of unity, which reduces the proof to ten cases checkable by hand, and verify it in Lean~4.
 \end{abstract}
 
 \maketitle
@@ -55,13 +56,13 @@ The book $B_k$ is the graph $K_2+\overline{K_k}$: $k$ triangles sharing one edge
 \begin{equation}\label{eq:RS}
 R(B_{n-1},B_n)\le 4n-1\qquad(n\ge2).
 \end{equation}
-Wesley~\cite{We} proved equality for $n\le20$ and whenever $2n-1$ is a prime power congruent to $1$ modulo $4$, and conjectured equality for every $n$. The conjecture is one of the open problems of Epoch AI's FrontierMath collection~\cite{Ep}, which records further progress. Turturean~\cite{Tu} constructed extremal graphs for all $n\le56$ and for fifteen further values below $100$, partly through a cyclotomic construction of Szekeres~\cite{Sz} that applies when $4n-1$ is a prime congruent to $3$ modulo $8$; Chung, Du and Wesley~\cite{CDW} found three further infinite families, from conference graphs, from Legendre pairs and from Yamada--Pott designs; and Price obtained $n=70$~\cite{Ep}.\footnote{The values $n\le100$ that none of the constructions cited here covers are $58$, $59$, $60$, $64$, $65$, $67$, $68$, $72$, $73$, $76$, $78$, $80$, $81$, $84$, $88$, $89$, $92$, $93$, $94$, $96$ and $100$. This list is our reading of~\cite{CDW,Ep,Tu,We} as of 14 October 2026.} The value $n=67$ was not among them. We settle it.
+Wesley~\cite{We} proved equality for $n\le20$ and whenever $2n-1$ is a prime power congruent to $1$ modulo $4$, and conjectured equality for every $n$. The conjecture is one of the open problems of Epoch AI's FrontierMath collection~\cite{Ep}, which records further progress. Turturean~\cite{Tu} constructed extremal graphs for all $n\le56$ and for fifteen further values below $100$, partly through a cyclotomic construction of Szekeres~\cite{Sz} that applies when $4n-1$ is a prime congruent to $3$ modulo $8$; Chung, Du and Wesley~\cite{CDW} found three further infinite families, from conference graphs, from Legendre pairs and from Yamada--Pott designs; and Price obtained $n=70$~\cite{Ep}.\footnote{The values $n\le100$ that none of the constructions cited here covers are $58$, $59$, $60$, $64$, $65$, $68$, $72$, $73$, $76$, $78$, $80$, $81$, $84$, $88$, $89$, $92$, $93$, $94$, $96$ and $100$. This list is our reading of~\cite{CDW,CDWd,Ep,Tu,We} as of 14 October 2026; it agrees with the ledger in~\cite[Section~6.1]{CDWd}.} The value $n=67$ is not covered by these families, but the public data accompanying~\cite{CDW} settle it by a finite certificate~\cite[Section~5.1]{CDWd}: a $266$-vertex graph, described there as a regular two-fibre colouring built from multiplier orbits over $\Z_{133}$, in which every red edge has at most $65$ common red neighbours and every blue edge at most $66$ common blue neighbours.
 
-\begin{maintheorem}
+\begin{maintheorem}[Chung, Du and Wesley~\cite{CDWd}]
 $R(B_{66},B_{67})=267$.
 \end{maintheorem}
 
-The upper bound is~\eqref{eq:RS}. For the lower bound we exhibit a graph on $266$ vertices with no $B_{66}$ whose complement has no $B_{67}$. It is a two-block circulant graph over $\Z_{133}$, the shape used by Wesley~\cite{We} and Turturean~\cite{Tu}, and its connection sets are invariant under multiplication by the nine cube roots of unity modulo $133$. Section~\ref{sec:blocks} reduces the two book conditions to one inequality~\eqref{eq:star} on the connection sets; the symmetry then reduces~\eqref{eq:star} to ten cases, which Table~\ref{tab:main} records. Every step can be checked by hand, and the graph has also been checked by two independent programs and in Lean~4 (see the end of the paper).
+We found the same graph independently, by the computer search described in Section~\ref{sec:remarks}, before we knew of~\cite{CDWd}; the two graphs are isomorphic (Remark~\ref{rem:iso}). This note gives an explicit description of it and a proof that does not rest on a computer. The upper bound is~\eqref{eq:RS}. For the lower bound the graph is a two-block circulant graph over $\Z_{133}$, the shape used by Wesley~\cite{We} and Turturean~\cite{Tu}, and its connection sets are invariant under multiplication by the nine cube roots of unity modulo $133$. Section~\ref{sec:blocks} reduces the two book conditions to one inequality~\eqref{eq:star} on the connection sets; the symmetry then reduces~\eqref{eq:star} to ten cases, which Table~\ref{tab:main} records. Every step can be checked by hand, and the graph has also been checked by two independent programs and in Lean~4 (see the end of the paper); \cite{CDWd} checks its certificate by a Python program.
 
 \section{Two-block circulant graphs}\label{sec:blocks}
 
@@ -197,18 +198,22 @@ An element $u$ of $H$ fixes $B$, because $B$ is a union of $H$-orbits, and fixes
 \label{fig:slack}
 \end{figure}
 
-\section{Remarks}
+\section{Remarks}\label{sec:remarks}
 
 \begin{remark}
 The function $f$ is not constant on $A$ or on $C$ (Figure~\ref{fig:slack}): it takes the values $63$, $64$, $65$ on $A$ and $64$, $65$, $66$ on $C$. So the example is not a difference-set construction of the kind behind the infinite families in~\cite{Sz,Tu,We}, where $f$ is constant on $A$ and on $C$.
 \end{remark}
 
+\begin{remark}\label{rem:iso}
+The graph $\Gamma(A,B)$ is isomorphic to the certificate \texttt{finite\_n67} of~\cite{CDWd}, the $266\times266$ matrix with SHA-256 digest \texttt{819dbb31\dots a1cf1} stated there. Both graphs are $132$-regular, have the same numbers of edges in $63$, $64$ and $65$ triangles ($798$, $2793$ and $13965$) and the same spectrum, and an explicit isomorphism, found by the VF2++ algorithm, is archived in~\cite{Ar}: relabelling $\Gamma(A,B)$ by it gives a matrix with the published digest, and it agrees entry by entry with the matrix of~\cite{CDWd}.
+\end{remark}
+
 \begin{remark}
-The example was found by a computer search. For fixed $v=2n-1$ and a subgroup $H\le\Z_v^\times$, the sets $A$ and $B$ are taken to be unions of $H$-orbits, with $A=-A$; one $0/1$ variable for each orbit in $A$ and one for each orbit in $B$ turn~\eqref{eq:star} into a system of quadratic inequalities, one for each $H$-orbit of $d$, together with $|A|=|B|=n-1$. For $v=133$ the cube roots of unity have $20$ orbits on the nonzero residues, and the CP-SAT solver of OR-Tools~\cite{OR} finds a solution in under a second. The same search did not produce examples for the other values in the footnote to the introduction, for the subgroups and the time limits we tried; some of these systems are infeasible. No step of the proof above depends on the search.
+We found the example by a computer search. For fixed $v=2n-1$ and a subgroup $H\le\Z_v^\times$, the sets $A$ and $B$ are taken to be unions of $H$-orbits, with $A=-A$; one $0/1$ variable for each orbit in $A$ and one for each orbit in $B$ turn~\eqref{eq:star} into a system of quadratic inequalities, one for each $H$-orbit of $d$, together with $|A|=|B|=n-1$. For $v=133$ the cube roots of unity have $20$ orbits on the nonzero residues, and the CP-SAT solver of OR-Tools~\cite{OR} finds a solution in under a second. The same search did not produce examples for the other values in the footnote to the introduction, for the subgroups and the time limits we tried; some of these systems are infeasible. No step of the proof above depends on the search.
 \end{remark}
 
 \begin{question}
-Is there an infinite family of two-block circulant graphs, with connection sets invariant under a large multiplier group but $f$ not constant on $A$, that settles further cases of $R(B_{n-1},B_n)=4n-1$? The smallest open case is now $n=58$, with $v=115$.
+Is there an infinite family of two-block circulant graphs, with connection sets invariant under a large multiplier group but $f$ not constant on $A$, that settles further cases of $R(B_{n-1},B_n)=4n-1$? The smallest open case is $n=58$, where no such graph exists: a symmetric set $A$ avoiding $0$ has even size, while $|A|=n-1=57$. The smallest open case this shape can reach is $n=59$, with $v=117$.
 \end{question}
 
 \subsection*{Formal verification}
@@ -220,10 +225,13 @@ The author used Claude (Anthropic) to search for the example, to check it by com
 \begin{thebibliography}{99}
 
 \bibitem{Ar}
-D.~Bhattacharjee, \emph{The book Ramsey number $R(B_{66},B_{67})$: data, checks, search and Lean~4 proof}, version 1.0.0, Zenodo, 2026, \doi{10.5281/zenodo.23373629}. Source code at \url{https://github.com/creelie/Breakthrough-problems-2}
+D.~Bhattacharjee, \emph{A hand-checkable proof that $R(B_{66},B_{67})=267$: data, checks, search and Lean~4 proof}, Zenodo, 2026, all versions \doi{10.5281/zenodo.23373628}. Source code at \url{https://github.com/creelie/Breakthrough-problems-2}
 
 \bibitem{CDW}
 S.~Chung, W.~Du and W.~J.~Wesley, \emph{Autonomous mathematical discovery in an open-world multi-agent environment}, preprint, 2026. \href{https://arxiv.org/abs/2608.23691}{arXiv:2608.23691}
+
+\bibitem{CDWd}
+S.~Chung, W.~Du and W.~J.~Wesley, \emph{Station data v2}, book Ramsey verification notebook and certificates, first public version 24 August 2026. \url{https://github.com/dualverse-ai/station_data_v2}, accessed 14 October 2026.
 
 \bibitem{Ep}
 Epoch AI, \emph{FrontierMath open problems: Ramsey numbers for book graphs}, 2026. \url{https://epoch.ai/frontiermath/open-problems/ramsey-book-graphs}, accessed 14 October 2026.

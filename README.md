@@ -1,10 +1,18 @@
-# The book Ramsey number R(B_66, B_67)
+# A hand-checkable proof that R(B_66, B_67) = 267
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23373629.svg)](https://doi.org/10.5281/zenodo.23373629)
 
 Release v1.0.0 is archived on Zenodo under the version DOI
 [10.5281/zenodo.23373629](https://doi.org/10.5281/zenodo.23373629); the concept DOI of all versions is
 [10.5281/zenodo.23373628](https://doi.org/10.5281/zenodo.23373628).
+
+**Correction.** Release v1.0.0 presented R(B_66, B_67) = 267 as a new value. It is not: Chung, Du and
+Wesley proved it in the data accompanying their Station paper, published on 24 August 2026
+([station_data_v2](https://github.com/dualverse-ai/station_data_v2),
+`artifacts/book_ramsey/verification.ipynb`, Section 5.1, certificate `finite_n67`), and their graph
+is isomorphic to the one here (`verification/python/station_isomorphism.py`). The priority check of
+v1.0.0 read their paper but not that repository. What this repository adds is the description of the
+graph by multiplier orbits, a proof checkable by hand, and a Lean 4 kernel check.
 
 The book B_k is the graph K_2 + K̄_k: k triangles sharing one edge. Rousseau and Sheehan,
 *On Ramsey numbers for books*, J. Graph Theory 2 (1978), 77–87,
@@ -16,11 +24,12 @@ R(B_{n−1}, B_n) ≤ 4n − 1. Wesley, *Lower bounds for book Ramsey numbers*, 
 open problem of Epoch AI's FrontierMath collection
 ([Book Ramsey numbers](https://epoch.ai/frontiermath/open-problems/ramsey-book-graphs)). Later work
 settled all n ≤ 56 and many further values (Turturean; Chung, Du and Wesley,
-[arXiv:2608.23691](https://arxiv.org/abs/2608.23691); Price, n = 70), but not n = 67
-(see [PRIORITY-CHECK.md](PRIORITY-CHECK.md)).
+[arXiv:2608.23691](https://arxiv.org/abs/2608.23691), whose data also settle n = 67; Price, n = 70);
+see [PRIORITY-CHECK.md](PRIORITY-CHECK.md).
 
-**This repository proves R(B_66, B_67) = 267.** The upper bound is Rousseau–Sheehan. For the lower
-bound it gives a graph on 266 vertices with no B_66 whose complement has no B_67.
+**This repository gives a hand-checkable proof of R(B_66, B_67) = 267**, the theorem of Chung, Du
+and Wesley. The upper bound is Rousseau–Sheehan. For the lower bound it describes a graph on 266
+vertices with no B_66 whose complement has no B_67; up to isomorphism it is their certificate.
 
 | | |
 |---|---|
@@ -73,8 +82,12 @@ Independent checks outside Lean (`scripts/run_all.sh`):
 - `verification/python/verify_n67.py`: the same count, written separately in Python.
 - `verification/python/check_paper.py`: reads H, the orbit representatives, A, B, Table 1, the
   footnotes, captions and remarks out of `preprint/main.tex` and recomputes all 48 numbers.
-- `verification/python/open_values.py`: recomputes the values n ≤ 100 that no earlier construction
-  covers (58, 59, 60, 64, 65, 67, 68, 72, 73, 76, 78, 80, 81, 84, 88, 89, 92, 93, 94, 96, 100).
+- `verification/python/open_values.py`: recomputes the values n ≤ 100 that no published
+  construction covers (58, 59, 60, 64, 65, 68, 72, 73, 76, 78, 80, 81, 84, 88, 89, 92, 93, 94, 96, 100).
+- `verification/python/station_isomorphism.py`: relabels the graph by the bijection in
+  `data/station_isomorphism.json` and checks that the result has the SHA-256 digest that Chung, Du and
+  Wesley publish for their certificate `finite_n67` (with `--npz` it also compares entry by entry with
+  their array, which is not redistributed here).
 - `search/orbit_search.py`: the search that found the example. With A and B unions of orbits of
   the cube roots of unity, the inequality becomes a system in 20 + 20 Boolean variables, which the
   CP-SAT solver of OR-Tools solves in about a second; the set it returns is checked on all pairs.
@@ -83,21 +96,22 @@ Independent checks outside Lean (`scripts/run_all.sh`):
 
 ```
 data/n67.json              n, v, H, A, B
+data/station_isomorphism.json  the bijection onto the certificate of Chung, Du and Wesley
 lean/                      Lean 4 (core only, v4.35.0)
   BookRamsey/Defs.lean     the graph
   BookRamsey/RowsXX.lean   the kernel checks, one theorem per vertex
   BookRamsey/Main.lean     the theorems above
   Check.lean               axiom audit
 verification/c/            check_book.c
-verification/python/       verify_n67.py, check_paper.py, open_values.py
+verification/python/       verify_n67.py, check_paper.py, open_values.py, station_isomorphism.py
 verification/axioms.txt    output of Check.lean
 search/                    orbit_search.py (needs OR-Tools)
 preprint/                  the paper (amsart) and its TikZ figures
 dist/                      the paper as PDF, as LaTeX with PNG figures, and as an arXiv tarball
 scripts/                   gen_lean.py, gen_figures.py, build_paper.sh, run_all.sh, audit_axioms.py
-PRIORITY-CHECK.md          the dated check that n = 67 was open
-MasterBookRamsey67_masterzipfinal2.zip  the paper, the Discrete Mathematics submission, the priority
-                           check and a snapshot of this repository
+PRIORITY-CHECK.md          the dated priority check, with the source it first missed
+MasterBookRamsey67_masterzipfinal2.zip  the paper, the priority check and a snapshot of this
+                           repository (no journal submission: the value is not new)
 ```
 
 To reproduce: `scripts/run_all.sh` (C compiler, Python 3; OR-Tools for the search),
@@ -107,9 +121,10 @@ minutes on a shared four-core machine, with up to about 2 GB of memory per Lean 
 
 ## What is open
 
-Only n = 67 is settled here. The conjecture R(B_{n−1}, B_n) = 4n − 1 stays open in general, and
+No new value is settled here. The conjecture R(B_{n−1}, B_n) = 4n − 1 stays open in general, and
 for n ≤ 100 at 58, 59, 60, 64, 65, 68, 72, 73, 76, 78, 80, 81, 84, 88, 89, 92, 93, 94, 96 and 100;
-the same orbit search did not find examples there for the subgroups and time limits tried.
+the same orbit search did not find examples there for the subgroups and time limits tried. For even
+n the two-block shape cannot occur at all, since a symmetric set A avoiding 0 has even size n − 1.
 
 ## Author
 
