@@ -1,16 +1,19 @@
-/* check_book.c -- independent check of the lower bound R(B_66, B_67) > 266.
+/* check_book.c -- independent check of the lower bounds R(B_66, B_67) > 266 and R(B_57, B_58) > 230.
  *
- * Reads n, v and the sets A, B from data/n67.json (a minimal reader for that file), builds the
- * adjacency matrix of the two-block circulant graph Gamma(A, B) on Z_v x {0,1}:
+ * Reads n, v and the sets A, B from a data file such as data/n67.json or data/n58.json (a minimal
+ * reader for those files), builds the adjacency matrix of the two-block circulant graph Gamma(A, B)
+ * on Z_v x {0,1}:
  *     (x,0)~(y,0) iff y-x in A,   (x,1)~(y,1) iff y-x in C = Z_v \ (A u {0}),   (x,0)~(y,1) iff y-x in B,
- * and checks by direct counting over all pairs of vertices that the graph is simple and
- * (2n-2)-regular, that every edge lies in at most n-2 triangles (no book B_{n-1}), and that every
+ * and checks by direct counting over all pairs of vertices that the graph is simple, with the degrees
+ * of its shape, that every edge lies in at most n-2 triangles (no book B_{n-1}), and that every
  * non-adjacent pair has at most n-1 common non-neighbours (no B_n in the complement).
- * It also prints, for each d != 0, the number f(d) = N_AA(d) + N_BB(d) and the slack
- * n-1-[d in A]-f(d), summarised by value.
+ * Two shapes occur: for odd n, |A| = |B| = n-1 and the graph is (2n-2)-regular; for even n,
+ * |A| = n, |B| = n-1, and the vertices of the two blocks have degrees 2n-1 and 2n-3.
+ * It also prints the slack of the inequality f(d) <= bound(d) at every d != 0, summarised by value,
+ * where f(d) = N_AA(d) + N_BB(d) and bound(d) = n-1-[d in A] (odd n) or n+1-3[d in A] (even n).
  *
  * Build and run:  cc -O2 -Wall -Wextra -o check_book verification/c/check_book.c
- *                 ./check_book data/n67.json
+ *                 ./check_book data/n58.json
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -62,14 +65,18 @@ static int list_key(const char *s, const char *key, int *vals, int max) {
 static unsigned char G[2 * MAXV][2 * MAXV];
 
 int main(int argc, char **argv) {
-    const char *path = argc > 1 ? argv[1] : "data/n67.json";
+    const char *path = argc > 1 ? argv[1] : "data/n58.json";
     char *s;
     if (read_file(path, &s)) { fprintf(stderr, "cannot read %s\n", path); return 2; }
     int n = int_key(s, "n"), v = int_key(s, "v");
     static int Av[MAXV], Bv[MAXV];
     int na = list_key(s, "A", Av, MAXV), nb = list_key(s, "B", Bv, MAXV);
     if (v != 2 * n - 1 || v > MAXV) { fprintf(stderr, "bad n, v\n"); return 1; }
-    if (na != n - 1 || nb != n - 1) { fprintf(stderr, "|A| = %d, |B| = %d, expected %d\n", na, nb, n - 1); return 1; }
+    int even = n % 2 == 0, sizeA = even ? n : n - 1;
+    if (na != sizeA || nb != n - 1) {
+        fprintf(stderr, "|A| = %d, |B| = %d, expected %d and %d\n", na, nb, sizeA, n - 1);
+        return 1;
+    }
 
     static unsigned char inA[MAXV], inB[MAXV], inC[MAXV];
     for (int i = 0; i < na; i++) inA[Av[i] % v] = 1;
@@ -97,7 +104,8 @@ int main(int argc, char **argv) {
             deg += G[p][q];
             if (G[p][q] != G[q][p]) { fprintf(stderr, "not symmetric at %d %d\n", p, q); return 1; }
         }
-        if (deg != 2 * n - 2) { fprintf(stderr, "vertex %d has degree %d\n", p, deg); return 1; }
+        int want = even ? (p < v ? 2 * n - 1 : 2 * n - 3) : 2 * n - 2;
+        if (deg != want) { fprintf(stderr, "vertex %d has degree %d\n", p, deg); return 1; }
     }
 
     long pairs = 0, edges = 0;
@@ -122,12 +130,16 @@ int main(int argc, char **argv) {
             if (inA[y] && inA[(y + d) % v]) f++;
             if (inB[y] && inB[(y + d) % v]) f++;
         }
-        int sl = n - 1 - inA[d] - f;
+        int sl = (even ? n + 1 - 3 * inA[d] : n - 1 - inA[d]) - f;
         if (sl < 0) { fprintf(stderr, "inequality (*) fails at d = %d\n", d); return 1; }
         if (sl < 8) slack_count[sl]++;
     }
 
-    printf("n = %d, v = %d: %d vertices, %ld edges, %ld pairs, %d-regular\n", n, v, N, edges, pairs, 2 * n - 2);
+    if (even)
+        printf("n = %d, v = %d: %d vertices, %ld edges, %ld pairs, degrees %d and %d\n", n, v, N, edges, pairs,
+               2 * n - 1, 2 * n - 3);
+    else
+        printf("n = %d, v = %d: %d vertices, %ld edges, %ld pairs, %d-regular\n", n, v, N, edges, pairs, 2 * n - 2);
     printf("max common neighbours of an edge: %d (bound %d)\n", max_cn, n - 2);
     printf("max common non-neighbours of a non-edge: %d (bound %d)\n", max_cnn, n - 1);
     printf("slack of (*) over d != 0:");

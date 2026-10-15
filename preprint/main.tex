@@ -56,7 +56,7 @@ The book $B_k$ is the graph $K_2+\overline{K_k}$: $k$ triangles sharing one edge
 \begin{equation}\label{eq:RS}
 R(B_{n-1},B_n)\le 4n-1\qquad(n\ge2).
 \end{equation}
-Wesley~\cite{We} proved equality for $n\le20$ and whenever $2n-1$ is a prime power congruent to $1$ modulo $4$, and conjectured equality for every $n$. The conjecture is one of the open problems of Epoch AI's FrontierMath collection~\cite{Ep}, which records further progress. Turturean~\cite{Tu} constructed extremal graphs for all $n\le56$ and for fifteen further values below $100$, partly through a cyclotomic construction of Szekeres~\cite{Sz} that applies when $4n-1$ is a prime congruent to $3$ modulo $8$; Chung, Du and Wesley~\cite{CDW} found three further infinite families, from conference graphs, from Legendre pairs and from Yamada--Pott designs; and Price obtained $n=70$~\cite{Ep}.\footnote{The values $n\le100$ that none of the constructions cited here covers are $58$, $59$, $60$, $64$, $65$, $68$, $72$, $73$, $76$, $78$, $80$, $81$, $84$, $88$, $89$, $92$, $93$, $94$, $96$ and $100$. This list is our reading of~\cite{CDW,CDWd,Ep,Tu,We} as of 14 October 2026; it agrees with the ledger in~\cite[Section~6.1]{CDWd}.} The value $n=67$ is not covered by these families, but the public data accompanying~\cite{CDW} settle it by a finite certificate~\cite[Section~5.1]{CDWd}: a $266$-vertex graph, described there as a regular two-fibre colouring built from multiplier orbits over $\Z_{133}$, in which every red edge has at most $65$ common red neighbours and every blue edge at most $66$ common blue neighbours.
+Wesley~\cite{We} proved equality for $n\le20$ and whenever $2n-1$ is a prime power congruent to $1$ modulo $4$, and conjectured equality for every $n$. The conjecture is one of the open problems of Epoch AI's FrontierMath collection~\cite{Ep}, which records further progress. Turturean~\cite{Tu} constructed extremal graphs for all $n\le56$ and for fifteen further values below $100$, partly through a cyclotomic construction of Szekeres~\cite{Sz} that applies when $4n-1$ is a prime congruent to $3$ modulo $8$; Chung, Du and Wesley~\cite{CDW} found three further infinite families, from conference graphs, from Legendre pairs and from Yamada--Pott designs; and Price obtained $n=70$~\cite{Ep}.\footnote{The values $n\le100$ that none of the constructions cited here covers are $59$, $60$, $64$, $65$, $68$, $72$, $73$, $76$, $78$, $80$, $81$, $84$, $88$, $89$, $92$, $93$, $94$, $96$ and $100$; the value $n=58$ is settled in~\cite{Bh58}. This list is our reading of~\cite{CDW,CDWd,Ep,Tu,We} as of 15 October 2026; apart from $n=58$ it agrees with the ledger in~\cite[Section~6.1]{CDWd}.} The value $n=67$ is not covered by these families, but the public data accompanying~\cite{CDW} settle it by a finite certificate~\cite[Section~5.1]{CDWd}: a $266$-vertex graph, described there as a regular two-fibre colouring built from multiplier orbits over $\Z_{133}$, in which every red edge has at most $65$ common red neighbours and every blue edge at most $66$ common blue neighbours.
 
 \begin{maintheorem}[Chung, Du and Wesley~\cite{CDWd}]
 $R(B_{66},B_{67})=267$.
@@ -213,7 +213,7 @@ We found the example by a computer search. For fixed $v=2n-1$ and a subgroup $H\
 \end{remark}
 
 \begin{question}
-Is there an infinite family of two-block circulant graphs, with connection sets invariant under a large multiplier group but $f$ not constant on $A$, that settles further cases of $R(B_{n-1},B_n)=4n-1$? The smallest open case is $n=58$, with $v=115$. There $\Gamma(A,B)$ itself does not exist, since a symmetric set $A$ avoiding $0$ has even size while $|A|=n-1=57$; for even $n$ Turturean's examples~\cite{Tu} take $|A|=n$, $|B|=n-1$ and the third block the complement of $A\cup\{0\}$, which gives a graph that is not regular. The smallest open odd value is $n=59$, with $v=117$.
+Is there an infinite family of two-block circulant graphs, with connection sets invariant under a large multiplier group but $f$ not constant on $A$, that settles further cases of $R(B_{n-1},B_n)=4n-1$? The smallest open case is now $n=59$, with $v=117$. For $n=58$ the graph $\Gamma(A,B)$ itself does not exist, since a symmetric set $A$ avoiding $0$ has even size while $|A|=n-1=57$; that case is settled in~\cite{Bh58} by a graph of the shape Turturean uses for even $n$~\cite{Tu}, with $|A|=n$, $|B|=n-1$ and the third block the complement of $A\cup\{0\}$, and that graph has no multiplier symmetry.
 \end{question}
 
 \subsection*{Formal verification}
@@ -225,7 +225,10 @@ The author used Claude (Anthropic) to search for the example, to check it by com
 \begin{thebibliography}{99}
 
 \bibitem{Ar}
-D.~Bhattacharjee, \emph{A hand-checkable proof that $R(B_{66},B_{67})=267$: data, checks, search and Lean~4 proof}, Zenodo, 2026, all versions \doi{10.5281/zenodo.23373628}. Source code at \url{https://github.com/creelie/Breakthrough-problems-2}
+D.~Bhattacharjee, \emph{Book Ramsey numbers $R(B_{57},B_{58})=231$ and $R(B_{66},B_{67})=267$: data, checks, search and Lean~4 proofs}, Zenodo, 2026, all versions \doi{10.5281/zenodo.23373628}. Source code at \url{https://github.com/creelie/Breakthrough-problems-2}
+
+\bibitem{Bh58}
+D.~Bhattacharjee, \emph{The book Ramsey number $R(B_{57},B_{58})=231$}, preprint, 2026, archived in~\cite{Ar}.
 
 \bibitem{CDW}
 S.~Chung, W.~Du and W.~J.~Wesley, \emph{Autonomous mathematical discovery in an open-world multi-agent environment}, preprint, 2026. \href{https://arxiv.org/abs/2608.23691}{arXiv:2608.23691}
