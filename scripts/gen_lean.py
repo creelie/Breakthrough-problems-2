@@ -1,23 +1,34 @@
-"""gen_lean.py -- write the Lean 4 project lean/ from data/n67.json.
+"""gen_lean.py -- write the Lean 4 project lean/ from the data files data/n67.json and data/n58.json.
 
-  lean/BookRamsey/Defs.lean      the graph: bit masks of A and B, adjacency, common (non-)neighbours
-  lean/BookRamsey/RowsXX.lean    one theorem per vertex p, `rowOk p = true`, checked by `decide +kernel`
-                                 (17 files of about equal work), and the chunk theorem of each file
-  lean/BookRamsey/Main.lean      symmetry, no book B_{n-1}, no book B_n in the complement, lower_bound
-  lean/Check.lean                prints the axioms of the five main theorems
+For each data file, with N = N67 or N58:
+  lean/BookRamsey/N/Defs.lean    the graph: bit masks of A and B, adjacency, common (non-)neighbours
+  lean/BookRamsey/N/RowsXX.lean  one theorem per vertex p, `rowOk p = true`, checked by `decide +kernel`
+                                 (about 17 files of equal work), and the chunk theorem of each file
+  lean/BookRamsey/N/Main.lean    symmetry, no book B_{n-1}, no book B_n in the complement, lower_bound
+lean/BookRamsey/Value.lean states R(B_{n-1}, B_n) = 4n - 1 for each n, from the graph of Main (the lower
+bound) and Goodman's count in the hand-written lean/BookRamsey/Upper.lean (the upper bound), which uses
+the finite sums of lean/BookRamsey/Sums.lean. lean/BookRamsey.lean imports every Main and Value, and
+lean/Check.lean prints the axioms of the main theorems.
+The definitions do not depend on the shape of the graph (|A| = n - 1 for odd n, |A| = n for even n).
 
-Uses only the Lean core (no Mathlib). Usage: python3 scripts/gen_lean.py [data/n67.json [lean]]
+Uses only the Lean core (no Mathlib). Usage: python3 scripts/gen_lean.py [OUT [DATA ...]]
 """
 import json, os, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-args = sys.argv[1:] + [os.path.join(ROOT, 'data', 'n67.json'), os.path.join(ROOT, 'lean')][len(sys.argv[1:]):]
-d = json.load(open(args[0]))
-n, v = d['n'], d['v']; NV = 2*v
-A = d['A']; B = d['B']
-am = sum(1 << x for x in A); bm = sum(1 << x for x in B)
-out = args[1]; os.makedirs(f'{out}/BookRamsey', exist_ok=True)
-NAME = f'N{n}'
-defs = f"""/-
+out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, 'lean')
+files = sys.argv[2:] or [os.path.join(ROOT, 'data', f) for f in ('n67.json', 'n58.json')]
+modules = []
+
+
+def gen(path):
+    d = json.load(open(path))
+    n, v = d['n'], d['v']; NV = 2*v
+    A = d['A']; B = d['B']
+    am = sum(1 << x for x in A); bm = sum(1 << x for x in B)
+    NAME = f'N{n}'
+    modules.append(NAME)
+    os.makedirs(f'{out}/BookRamsey/{NAME}', exist_ok=True)
+    defs = f"""/-
   Book Ramsey lower bound for n = {n}: an explicit graph on 4n-2 = {NV} vertices
   with no book B_{{{n-1}}} whose complement has no book B_{{{n}}}.
   Vertices are 0, ..., {NV-1}; vertex p lies in block p / {v} at position p % {v}.
@@ -67,20 +78,20 @@ def rowOk (p : Nat) : Bool :=
 
 end BookRamsey.{NAME}
 """
-open(f'{out}/BookRamsey/Defs.lean', 'w').write(defs)
-# balanced chunks by pair count
-K = 16; total = NV*(NV-1)//2; chunks = []; start = 0; acc = 0
-for p in range(NV):
-    acc += NV-1-p
-    if acc >= total*(len(chunks)+1)/K or p == NV-1:
-        chunks.append((start, p+1-start)); start = p+1
-for i, (a, b) in enumerate(chunks):
-    rows = list(range(a, a+b))
-    thms = '\n'.join(f"""set_option maxRecDepth 100000 in
+    open(f'{out}/BookRamsey/{NAME}/Defs.lean', 'w').write(defs)
+    # balanced chunks by pair count
+    K = 16; total = NV*(NV-1)//2; chunks = []; start = 0; acc = 0
+    for p in range(NV):
+        acc += NV-1-p
+        if acc >= total*(len(chunks)+1)/K or p == NV-1:
+            chunks.append((start, p+1-start)); start = p+1
+    for i, (a, b) in enumerate(chunks):
+        rows = list(range(a, a+b))
+        thms = '\n'.join(f"""set_option maxRecDepth 100000 in
 theorem row{p:03d} : rowOk {p} = true := by decide +kernel""" for p in rows)
-    lst = ', '.join(str(p) for p in rows)
-    names = ', '.join(f'row{p:03d}' for p in rows)
-    open(f'{out}/BookRamsey/Rows{i:02d}.lean', 'w').write(f"""import BookRamsey.Defs
+        lst = ', '.join(str(p) for p in rows)
+        names = ', '.join(f'row{p:03d}' for p in rows)
+        open(f'{out}/BookRamsey/{NAME}/Rows{i:02d}.lean', 'w').write(f"""import BookRamsey.{NAME}.Defs
 namespace BookRamsey.{NAME}
 
 /-! Rows {a} to {a+b-1}, each checked by the kernel in its own theorem. -/
@@ -94,13 +105,13 @@ theorem rows{i:02d} : (List.range' {a} {b}).all rowOk = true := by
 
 end BookRamsey.{NAME}
 """)
-imports = '\n'.join(f'import BookRamsey.Rows{i:02d}' for i in range(len(chunks)))
-facts = '\n'.join(f'  have h{i:02d} := (List.all_eq_true.mp rows{i:02d}) p' for i in range(len(chunks)))
-cases = []
-for i, (a, b) in enumerate(chunks):
-    cases.append(f'  · exact h{i:02d} (List.mem_range\'_1.mpr (by omega))' if i == len(chunks)-1 else
-                 f'  by_cases c{i:02d} : p < {a+b}\n  · exact h{i:02d} (List.mem_range\'_1.mpr (by omega))')
-main = f"""{imports}
+    imports = '\n'.join(f'import BookRamsey.{NAME}.Rows{i:02d}' for i in range(len(chunks)))
+    facts = '\n'.join(f'  have h{i:02d} := (List.all_eq_true.mp rows{i:02d}) p' for i in range(len(chunks)))
+    cases = []
+    for i, (a, b) in enumerate(chunks):
+        cases.append(f'  · exact h{i:02d} (List.mem_range\'_1.mpr (by omega))' if i == len(chunks)-1 else
+                     f'  by_cases c{i:02d} : p < {a+b}\n  · exact h{i:02d} (List.mem_range\'_1.mpr (by omega))')
+    main = f"""{imports}
 namespace BookRamsey.{NAME}
 
 theorem rowOk_all (p : Nat) (hp : p < {NV}) : rowOk p = true := by
@@ -166,16 +177,70 @@ theorem lower_bound :
 
 end BookRamsey.{NAME}
 """
-open(f'{out}/BookRamsey/Main.lean', 'w').write(main)
-open(f'{out}/BookRamsey.lean', 'w').write('import BookRamsey.Main\n')
+    open(f'{out}/BookRamsey/{NAME}/Main.lean', 'w').write(main)
+    print(NAME, 'chunks', chunks)
+
+
+for f in files:
+    gen(f)
+ns = [int(m[1:]) for m in modules]
+
+
+def value_name(n):
+    return f'R(B_{{{n-1}}}, B_{{{n}}}) = {4*n-1}'
+
+
+value = ('/-\n  ' + ' and '.join(value_name(n) for n in ns) + ', as statements about all graphs.\n'
+         '  The lower bounds are the explicit graphs of ' + ' and '.join(f'`{m}`' for m in modules)
+         + '; the upper bounds are Goodman\'s\n'
+         '  count in `Upper`, with the final arithmetic evaluated by the kernel.\n-/\n'
+         'import BookRamsey.Upper\n' + ''.join(f'import BookRamsey.{m}.Main\n' for m in modules)
+         + '\nnamespace BookRamsey\n')
+for m, n in zip(modules, ns):
+    N = 4*n - 1
+    value += f"""
+set_option maxRecDepth 100000 in
+/-- Every graph on {N} vertices contains `B_{n-1}` or has a complement containing `B_{n}`. -/
+theorem upper{n} : Arrows {N} {n-1} {n} :=
+  upper_of {N} {n-2} {n-1} {2*n-1} (by decide +kernel) (by decide +kernel) (by decide)
+
+/-- The graph of `{m}` on {N-1} vertices has no `B_{n-1}`, and its complement has no `B_{n}`. -/
+theorem lower{n} : ¬ Arrows {N-1} {n-1} {n} := by
+  intro hA
+  rcases hA {m}.adj (fun u v hu hv => {m}.adj_symm u v hu hv) with
+    ⟨u, v, hu, hv, huv, he, hk⟩ | ⟨u, v, hu, hv, huv, he, hk⟩
+  · have e : redBook {N-1} {m}.adj u v = {m}.cn u v := by
+      unfold redBook {m}.cn
+      rw [countP_range, countP_range]
+      apply S_congr; intro r _
+      unfold ind
+      by_cases a : r = u
+      · subst a; simp [{m}.adj_irrefl]
+      · by_cases b : r = v
+        · subst b; simp [{m}.adj_irrefl]
+        · simp [a, b]
+    have := {m}.no_red_book u v hu hv he
+    omega
+  · have := {m}.no_blue_book u v hu hv huv he
+    have e : blueBook {N-1} {m}.adj u v = {m}.cnn u v := rfl
+    omega
+
+/-- `{value_name(n)}`: every graph on {N} vertices contains `B_{n-1}` or has a complement
+    containing `B_{n}`, and {N} is the least such number. -/
+theorem book_ramsey_{n} : IsBookRamsey {n-1} {n} {N} :=
+  isBookRamsey_of {n-1} {n} {N} (by decide) upper{n} lower{n}
+"""
+value += '\nend BookRamsey\n'
+open(f'{out}/BookRamsey/Value.lean', 'w').write(value)
+open(f'{out}/BookRamsey.lean', 'w').write(''.join(f'import BookRamsey.{m}.Main\n' for m in modules)
+                                          + 'import BookRamsey.Value\n')
 open(f'{out}/lakefile.toml', 'w').write('name = "BookRamsey"\ndefaultTargets = ["BookRamsey"]\n\n[[lean_lib]]\nname = "BookRamsey"\n')
 open(f'{out}/lean-toolchain', 'w').write('leanprover/lean4:v4.35.0\n')
-open(f'{out}/Check.lean', 'w').write(f"""import BookRamsey
-open BookRamsey.{NAME}
-#print axioms no_red_book
-#print axioms no_blue_book
-#print axioms adj_symm
-#print axioms adj_irrefl
-#print axioms lower_bound
-""")
-print('chunks', chunks)
+check = 'import BookRamsey\n'
+for m in modules:
+    for t in ('no_red_book', 'no_blue_book', 'adj_symm', 'adj_irrefl', 'lower_bound'):
+        check += f'#print axioms BookRamsey.{m}.{t}\n'
+for n in ns:
+    for t in ('upper', 'lower', 'book_ramsey_'):
+        check += f'#print axioms BookRamsey.{t}{n}\n'
+open(f'{out}/Check.lean', 'w').write(check)

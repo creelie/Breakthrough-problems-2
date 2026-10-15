@@ -129,4 +129,10 @@ check(sum(f(d) for d in range(1, v)) == 2 * (n - 1) * (n - 2) and sum(sl) == n -
 check({f(d) for d in A} == {63, 64, 65} and {f(d) for d in range(1, v) if d not in A} == {64, 65, 66},
       "Remark 4.1: f takes 63, 64, 65 on A and 64, 65, 66 on C")
 check(266 * 265 // 2 == 35245 and "$35{,}245$ pairs" in tex, "35,245 pairs of vertices")
+# -- formal verification: the last step of Goodman's count for N = 267
+phi = [3 * d * (266 - d) + 65 * d + 66 * (266 - d) for d in range(267)]
+check(max(phi) == 266 * 265 and [d for d, x in enumerate(phi) if x == 266 * 265] == [133] and 267 * 133 % 2 == 1
+      and "each term on the right is at most $266\\cdot265$, with equality only when $d(w)=133$" in tex
+      and "the odd number $267\\cdot133$" in tex and "$N=267$, $a=65$ and $b=66$" in tex,
+      "Formal verification: 3dD + 65d + 66D <= 266*265 with equality only at d = 133, and 267*133 is odd")
 print(f"check_paper: all {ok} checks passed")

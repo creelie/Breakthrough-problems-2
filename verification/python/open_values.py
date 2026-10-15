@@ -9,7 +9,9 @@ Covered (see PRIORITY-CHECK.md for the sources):
                n = (q^2-q+2)/4 for prime powers q = 3 (mod 4), q >= 7 (Yamada-Pott designs)
   Price:       n = 70
   Chung-Du-Wesley, Station data v2 (24 August 2026): the finite certificate for n = 67
-The script prints the remaining values and checks them against the footnote of preprint/main.tex.
+  This repository: n = 58 (preprint58/main.tex, data/n58.json)
+The script prints the values that were open before n = 58 was settled and those that remain, and
+checks them against footnote 1 of preprint58/main.tex and of preprint/main.tex respectively.
 """
 import os
 import re
@@ -41,10 +43,17 @@ for n in range(1, 101):
         covered.add(n)
     if prime(4 * n - 1) and (4 * n - 1) % 8 == 3:
         covered.add(n)
-open_n = [n for n in range(1, 101) if n not in covered]
-print("open, n <= 100:", ", ".join(map(str, open_n)))
+before = [n for n in range(1, 101) if n not in covered]
+open_n = [n for n in before if n != 58]
+print("open, n <= 100, before n = 58:", ", ".join(map(str, before)))
+print("open, n <= 100, now:", ", ".join(map(str, open_n)))
+assert before[0] == 58 and all(n in covered for n in range(1, 58))
+tex58 = open(os.path.join(ROOT, "preprint58", "main.tex")).read()
+fn = re.search(r"none of the constructions cited here covers were (.*?)\. This list", tex58, re.S).group(1)
+assert [int(x) for x in re.findall(r"\d+", fn)] == before, "footnote 1 of preprint58/main.tex does not match"
+print("footnote 1 of preprint58/main.tex matches")
 tex = open(os.path.join(ROOT, "preprint", "main.tex")).read()
-fn = re.search(r"none of the constructions cited here covers are (.*?)\. This list", tex, re.S).group(1)
-assert [int(x) for x in re.findall(r"\d+", fn)] == open_n, "footnote 1 does not match"
+fn = re.search(r"none of the constructions cited here covers are (.*?); the value \$n=58\$ is settled", tex, re.S).group(1)
+assert [int(x) for x in re.findall(r"\d+", fn)] == open_n, "footnote 1 of preprint/main.tex does not match"
 assert 67 not in open_n
-print("footnote 1 of the paper matches")
+print("footnote 1 of preprint/main.tex matches")

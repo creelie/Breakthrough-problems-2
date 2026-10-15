@@ -11,7 +11,7 @@ on:
       tag:
         description: "Release tag, e.g. v1.0.0"
         required: true
-        default: "v1.0.0"
+        default: "v2.0.0"
       target:
         description: "Branch or commit to tag"
         required: true
@@ -19,7 +19,7 @@ on:
       title:
         description: "Release title"
         required: true
-        default: "The book Ramsey number R(B_66, B_67)"
+        default: "R(B_57, B_58) = 231, and a hand-checkable proof of R(B_66, B_67) = 267"
 
 permissions:
   contents: write
@@ -54,8 +54,9 @@ jobs:
           ref: ${{ inputs.target }}
       - name: Check the paper files
         run: |
-          for f in dist/book-ramsey-67_final2.pdf dist/book-ramsey-67_final2-tex.zip \
-                   dist/book-ramsey-67_final2-arxiv.tar.gz; do
+          for f in dist/book-ramsey-58_final2.pdf dist/book-ramsey-58_final2-tex.zip \
+                   dist/book-ramsey-58_final2-arxiv.tar.gz dist/book-ramsey-67_final2.pdf \
+                   dist/book-ramsey-67_final2-tex.zip dist/book-ramsey-67_final2-arxiv.tar.gz; do
             test -s "$f" || { echo "missing $f"; exit 1; }
           done
       - name: Publish the release
@@ -65,7 +66,7 @@ jobs:
           TARGET: ${{ inputs.target }}
           TITLE: ${{ inputs.title }}
         run: |
-          gh release create "$TAG" dist/book-ramsey-67_final2* \
+          gh release create "$TAG" dist/book-ramsey-58_final2* dist/book-ramsey-67_final2* \
             --target "$TARGET" \
             --title "$TAG: $TITLE" \
             --notes-file .github/RELEASE_NOTES.md

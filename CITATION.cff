@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this work, please cite it as below."
-title: "A hand-checkable proof that R(B_66, B_67) = 267"
+title: "Book Ramsey numbers R(B_57, B_58) = 231 and R(B_66, B_67) = 267: data, checks, search and Lean 4 proofs"
 type: software
 authors:
   - family-names: Bhattacharjee
@@ -8,19 +8,19 @@ authors:
     orcid: "https://orcid.org/0000-0003-0466-750X"
     affiliation: "Formerly, Electro-Gravitational Space Propulsion Laboratory (EGSPL), Bhubaneswar, Odisha 751030, India"
     email: d.bhattacharjee@erl-forschung.de
-version: 1.0.1
-doi: "10.5281/zenodo.23377549"
+version: 2.0.0
+doi: "10.5281/zenodo.23373628"
 identifiers:
   - type: doi
     value: "10.5281/zenodo.23373628"
     description: "Concept DOI of all versions"
   - type: doi
     value: "10.5281/zenodo.23377549"
-    description: "Version 1.0.1"
+    description: "Version 1.0.1 (n = 67 only)"
   - type: doi
     value: "10.5281/zenodo.23373629"
     description: "Version 1.0.0 (superseded)"
-date-released: 2026-10-14
+date-released: 2026-10-15
 license: MIT
 repository-code: "https://github.com/creelie/Breakthrough-problems-2"
 keywords:
@@ -28,15 +28,18 @@ keywords:
   - book graph
   - block-circulant graph
   - multiplier group
+  - local search
   - Lean 4
 abstract: >-
-  A hand-checkable proof that R(B_66, B_67) = 267, the case n = 67 of Wesley's conjecture
-  R(B_{n-1}, B_n) = 4n - 1, first shown by Chung, Du and Wesley in the Station data of 24 August 2026
-  by a 266-vertex certificate. Their graph is, up to isomorphism, a two-block circulant graph over
-  Z_133 whose connection sets are unions of orbits of the cube roots of unity modulo 133. The
-  repository holds the paper, a Lean 4 kernel check of the graph (standard axioms only), independent
-  checks in C and Python, the isomorphism with the Station certificate, the search, and a dated
-  priority check.
+  A new exact value of a book Ramsey number, R(B_57, B_58) = 231, the case n = 58 of Wesley's
+  conjecture R(B_{n-1}, B_n) = 4n - 1 and its smallest open case before this work: a graph on 230
+  vertices, a two-block circulant graph over Z_115 of the shape Turturean uses for even n, with no
+  B_57 whose complement has no B_58. The proof reduces both book conditions to 57 inequalities. The
+  repository also gives a hand-checkable proof of R(B_66, B_67) = 267, first shown by Chung, Du and
+  Wesley in the Station data of 24 August 2026, by a graph over Z_133 whose connection sets are unions
+  of orbits of the cube roots of unity. It holds both papers, Lean 4 proofs of both values (the
+  graphs checked by the kernel, the upper bound by Goodman's count; standard axioms only),
+  independent checks in C and Python, the searches, and dated priority checks.
 references:
   - type: article
     title: "On Ramsey numbers for books"
