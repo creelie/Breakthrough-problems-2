@@ -150,4 +150,10 @@ check([u for u in units if {u * a % v for a in A} == A] == [1, v - 1], "Remark 4
 check([u for u in units if {u * b % v for b in B} == B] == [1], "Remark 4.2: only 1 fixes B")
 check(len(B & {(-b) % v for b in B}) == 29 and "$B$ meets $-B$ in $29$ elements" in tex, "Remark 4.2: |B n -B| = 29")
 check(n % 2 == 0 and all((-x) % v != x for x in range(1, v)), "Section 1: no nonzero residue mod 115 is its own negative")
+# -- formal verification: the last step of Goodman's count for N = 231
+phi = [3 * d * (230 - d) + 56 * d + 57 * (230 - d) for d in range(231)]
+check(max(phi) == 230 * 229 and [d for d, x in enumerate(phi) if x == 230 * 229] == [115] and 231 * 115 % 2 == 1
+      and "each term on the right is at most $230\\cdot229$, with equality only when $d(w)=115$" in tex
+      and "the odd number $231\\cdot115$" in tex and "$N=231$, $a=56$ and $b=57$" in tex,
+      "Formal verification: 3dD + 56d + 57D <= 230*229 with equality only at d = 115, and 231*115 is odd")
 print(f"check_paper58: all {ok} checks passed")

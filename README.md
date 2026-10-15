@@ -24,7 +24,8 @@ see [PRIORITY-CHECK.md](PRIORITY-CHECK.md).
 **This repository settles n = 58**, which was the smallest open case of the conjecture (as of
 15 October 2026; see the n = 58 section of [PRIORITY-CHECK.md](PRIORITY-CHECK.md)). The upper bound
 is Rousseau–Sheehan; for the lower bound, a graph on 230 vertices with no B_57 whose complement has no
-B_58. The paper is `preprint58/main.tex` (6 pages), built into `dist/book-ramsey-58_final2.pdf`.
+B_58. Both bounds, and so the value itself, are also proved in Lean 4 (below). The paper is
+`preprint58/main.tex` (6 pages), built into `dist/book-ramsey-58_final2.pdf`.
 
 | | |
 |---|---|
@@ -53,7 +54,7 @@ Wesley proved it in the data accompanying their Station paper, published on 24 A
 `artifacts/book_ramsey/verification.ipynb`, Section 5.1, certificate `finite_n67`), and their graph
 is isomorphic to the one here (`verification/python/station_isomorphism.py`). The priority check of
 v1.0.0 read their paper but not that repository. What this repository adds for n = 67 is the
-description of the graph by multiplier orbits, a proof checkable by hand, and a Lean 4 kernel check.
+description of the graph by multiplier orbits, a proof checkable by hand, and a Lean 4 proof of the value.
 The paper is `preprint/main.tex`, built into `dist/book-ramsey-67_final2.pdf`.
 
 | | |
@@ -71,32 +72,43 @@ ten orbits of ±H, and Table 1 of that paper checks the inequality on those ten 
 
 ## Lean 4
 
-The Lean 4 development in `lean/` (core Lean v4.35.0, no Mathlib) checks both graphs themselves.
-For each, `lean/BookRamsey/N58/` and `lean/BookRamsey/N67/`, it defines the adjacency from bit masks
-of A and B, and the kernel evaluates the common neighbours and common non-neighbours of all pairs of
-vertices (26,335 and 35,245; `decide +kernel`, one theorem per vertex, no `native_decide`). The final
-theorems are
+The Lean 4 development in `lean/` (core Lean v4.35.0, no Mathlib) proves both values outright:
 
 ```lean
-theorem BookRamsey.N58.lower_bound :
-    (∀ p q, p < 230 → q < 230 → adj p q = adj q p) ∧ (∀ p, adj p p = false) ∧
-    (∀ p q, p < 230 → q < 230 → adj p q = true → cn p q ≤ 56) ∧
-    (∀ p q, p < 230 → q < 230 → p ≠ q → adj p q = false → cnn p q ≤ 57)
+/-- Every graph on N vertices contains B_m or has a complement containing B_n. -/
+def Arrows (N m n : Nat) : Prop :=
+  ∀ G : Nat → Nat → Bool, Symm N G → HasRedBook N m G ∨ HasBlueBook N n G
 
-theorem BookRamsey.N67.lower_bound :
-    (∀ p q, p < 266 → q < 266 → adj p q = adj q p) ∧ (∀ p, adj p p = false) ∧
-    (∀ p q, p < 266 → q < 266 → adj p q = true → cn p q ≤ 65) ∧
-    (∀ p q, p < 266 → q < 266 → p ≠ q → adj p q = false → cnn p q ≤ 66)
+/-- R(B_m, B_n) = R: every graph on R vertices arrows and no smaller number does. -/
+def IsBookRamsey (m n R : Nat) : Prop := Arrows R m n ∧ ∀ N, N < R → ¬ Arrows N m n
+
+theorem BookRamsey.book_ramsey_58 : IsBookRamsey 57 58 231
+theorem BookRamsey.book_ramsey_67 : IsBookRamsey 66 67 267
 ```
 
-where `cn p q` counts common neighbours and `cnn p q` common non-neighbours other than p and q.
-An edge in k triangles is the spine of a B_k, so these say that the graphs have no B_57 (resp. B_66)
-and their complements no B_58 (resp. B_67), that is R(B_57, B_58) > 230 and R(B_66, B_67) > 266; the
-Lean files state the graph property and leave this last translation, and the upper bound of Rousseau
-and Sheehan, to the papers. `lean/Check.lean` prints the axioms of `no_red_book`, `no_blue_book`,
-`adj_symm`, `adj_irrefl` and `lower_bound` for both, and `scripts/audit_axioms.py` checks that only
-`propext`, `Classical.choice` and `Quot.sound` occur (`verification/axioms.txt`). The Lean files are
-generated from `data/n58.json` and `data/n67.json` by `scripts/gen_lean.py`.
+A graph on the vertices 0, ..., N-1 is a symmetric `G : Nat → Nat → Bool`; `HasRedBook N k G` says
+that some edge uv has at least k common neighbours other than u and v (a book B_k), and
+`HasBlueBook N k G` says the same of a non-edge and common non-neighbours (`lean/BookRamsey/Upper.lean`).
+
+- Lower bounds (`lower58`, `lower67`). For each graph, `lean/BookRamsey/N58/` and
+  `lean/BookRamsey/N67/` define the adjacency from bit masks of A and B, and the kernel evaluates the
+  common neighbours and common non-neighbours of all pairs of vertices (26,335 and 35,245;
+  `decide +kernel`, one theorem per vertex, no `native_decide`): every edge has at most 56 (resp. 65)
+  common neighbours and every non-edge at most 57 (resp. 66) common non-neighbours.
+- Upper bounds (`upper58`, `upper67`). `lean/BookRamsey/Upper.lean` proves Goodman's count in the form
+  of Rousseau and Sheehan for every graph: if every edge lies in at most a triangles and every
+  non-edge has at most b common non-neighbours, then N(N-1)(N-2) ≤ Σ_w (3 d(w) D(w) + a d(w) + b D(w)),
+  with d(w) the degree and D(w) = N - 1 - d(w), by counting ordered triples of distinct vertices by
+  the colours of their pairs. For N = 4n - 1, a = n - 2, b = n - 1 each term is at most
+  (N-1)(N-2), with equality only at d(w) = 2n - 1, and then the degrees add up to the odd number
+  N(2n - 1); the kernel evaluates this last step for n = 58 and 67. The finite sums are in
+  `lean/BookRamsey/Sums.lean`.
+
+`lean/Check.lean` prints the axioms of `no_red_book`, `no_blue_book`, `adj_symm`, `adj_irrefl` and
+`lower_bound` for both graphs and of `upper58`, `lower58`, `book_ramsey_58`, `upper67`, `lower67`,
+`book_ramsey_67`, and `scripts/audit_axioms.py` checks that only `propext`, `Classical.choice` and
+`Quot.sound` occur (`verification/axioms.txt`). `Sums.lean` and `Upper.lean` are written by hand; the
+other Lean files are generated from `data/n58.json` and `data/n67.json` by `scripts/gen_lean.py`.
 
 ## Independent checks outside Lean (`scripts/run_all.sh`)
 
@@ -107,8 +119,8 @@ generated from `data/n58.json` and `data/n67.json` by `scripts/gen_lean.py`.
 - `verification/python/verify_book.py`: the same count, written separately in Python.
 - `verification/python/check_paper58.py`: reads A_+, A, B, Table 1, the footnote, captions and
   remarks out of `preprint58/main.tex`, recomputes them, and checks Lemmas 2.1 and 2.2 and
-  Proposition 2.3 on the graph itself (85 checks).
-- `verification/python/check_paper.py`: the same for `preprint/main.tex` (48 checks).
+  Proposition 2.3 on the graph itself (86 checks).
+- `verification/python/check_paper.py`: the same for `preprint/main.tex` (49 checks).
 - `verification/python/open_values.py`: recomputes the values n ≤ 100 that no published
   construction covered before n = 58 was settled, and those that remain (footnote 1 of both papers).
 - `verification/python/station_isomorphism.py`: relabels the n = 67 graph by the bijection in
@@ -129,7 +141,10 @@ data/n67.json              n, v, H, A, B for n = 67
 data/station_isomorphism.json  the bijection onto the certificate of Chung, Du and Wesley
 lean/                      Lean 4 (core only, v4.35.0)
   BookRamsey/N58/, N67/    Defs.lean (the graph), RowsXX.lean (kernel checks, one theorem per
-                           vertex), Main.lean (the theorems above)
+                           vertex), Main.lean (no book in the graph or its complement)
+  BookRamsey/Sums.lean     finite sums and double counting
+  BookRamsey/Upper.lean    Goodman's count and the upper bound R(B_{n-1}, B_n) <= 4n - 1
+  BookRamsey/Value.lean    book_ramsey_58 and book_ramsey_67
   Check.lean               axiom audit
 verification/c/            check_book.c
 verification/python/       verify_book.py, check_paper58.py, check_paper.py, open_values.py,
@@ -144,7 +159,9 @@ PRIORITY-CHECK.md          the dated priority checks for n = 58 and n = 67
 ```
 
 To reproduce: `scripts/run_all.sh` (C compiler, Python 3; OR-Tools for the search),
-`cd lean && lake build && lake env lean Check.lean` (Lean through elan; the kernel checks took about 16 minutes on a four-core machine, 6.4 for n = 58 and 10 for n = 67, with up to about 2 GB of memory per Lean process), and
+`cd lean && lake build && lake env lean Check.lean` (Lean through elan; the kernel checks of the
+graphs took about 16 minutes on a four-core machine, 6.4 for n = 58 and 10 for n = 67, with up to
+about 2 GB of memory per Lean process; the upper bounds take seconds), and
 `scripts/build_paper.sh` (TeX Live). The workflow `.github/workflows/verify.yml` runs all three.
 
 ## What is open

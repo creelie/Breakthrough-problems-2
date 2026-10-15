@@ -46,8 +46,11 @@ fi
 echo "== the Lean files are the generator's output"
 rm -rf "$B/lean-gen" && mkdir -p "$B/lean-gen"
 python3 -I scripts/gen_lean.py "$B/lean-gen" > /dev/null
-for f in BookRamsey.lean Check.lean lakefile.toml lean-toolchain $(cd lean && find BookRamsey -name '*.lean' | sort); do
+# Sums.lean and Upper.lean (Goodman's count) are written by hand; every other file is generated
+gen_files() { find BookRamsey -name '*.lean' ! -path BookRamsey/Sums.lean ! -path BookRamsey/Upper.lean | sort; }
+for f in BookRamsey.lean Check.lean lakefile.toml lean-toolchain $(cd lean && gen_files); do
   cmp "lean/$f" "$B/lean-gen/$f"
 done
-diff <(cd "$B/lean-gen" && find BookRamsey -name '*.lean' | sort) <(cd lean && find BookRamsey -name '*.lean' | sort)
+diff <(cd "$B/lean-gen" && gen_files) <(cd lean && gen_files)
+test -f lean/BookRamsey/Sums.lean && test -f lean/BookRamsey/Upper.lean
 echo "all checks passed"

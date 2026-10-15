@@ -5,7 +5,10 @@ For each data file, with N = N67 or N58:
   lean/BookRamsey/N/RowsXX.lean  one theorem per vertex p, `rowOk p = true`, checked by `decide +kernel`
                                  (about 17 files of equal work), and the chunk theorem of each file
   lean/BookRamsey/N/Main.lean    symmetry, no book B_{n-1}, no book B_n in the complement, lower_bound
-lean/BookRamsey.lean imports every Main, and lean/Check.lean prints the axioms of the main theorems.
+lean/BookRamsey/Value.lean states R(B_{n-1}, B_n) = 4n - 1 for each n, from the graph of Main (the lower
+bound) and Goodman's count in the hand-written lean/BookRamsey/Upper.lean (the upper bound), which uses
+the finite sums of lean/BookRamsey/Sums.lean. lean/BookRamsey.lean imports every Main and Value, and
+lean/Check.lean prints the axioms of the main theorems.
 The definitions do not depend on the shape of the graph (|A| = n - 1 for odd n, |A| = n for even n).
 
 Uses only the Lean core (no Mathlib). Usage: python3 scripts/gen_lean.py [OUT [DATA ...]]
@@ -180,11 +183,64 @@ end BookRamsey.{NAME}
 
 for f in files:
     gen(f)
-open(f'{out}/BookRamsey.lean', 'w').write(''.join(f'import BookRamsey.{m}.Main\n' for m in modules))
+ns = [int(m[1:]) for m in modules]
+
+
+def value_name(n):
+    return f'R(B_{{{n-1}}}, B_{{{n}}}) = {4*n-1}'
+
+
+value = ('/-\n  ' + ' and '.join(value_name(n) for n in ns) + ', as statements about all graphs.\n'
+         '  The lower bounds are the explicit graphs of ' + ' and '.join(f'`{m}`' for m in modules)
+         + '; the upper bounds are Goodman\'s\n'
+         '  count in `Upper`, with the final arithmetic evaluated by the kernel.\n-/\n'
+         'import BookRamsey.Upper\n' + ''.join(f'import BookRamsey.{m}.Main\n' for m in modules)
+         + '\nnamespace BookRamsey\n')
+for m, n in zip(modules, ns):
+    N = 4*n - 1
+    value += f"""
+set_option maxRecDepth 100000 in
+/-- Every graph on {N} vertices contains `B_{n-1}` or has a complement containing `B_{n}`. -/
+theorem upper{n} : Arrows {N} {n-1} {n} :=
+  upper_of {N} {n-2} {n-1} {2*n-1} (by decide +kernel) (by decide +kernel) (by decide)
+
+/-- The graph of `{m}` on {N-1} vertices has no `B_{n-1}`, and its complement has no `B_{n}`. -/
+theorem lower{n} : ¬ Arrows {N-1} {n-1} {n} := by
+  intro hA
+  rcases hA {m}.adj (fun u v hu hv => {m}.adj_symm u v hu hv) with
+    ⟨u, v, hu, hv, huv, he, hk⟩ | ⟨u, v, hu, hv, huv, he, hk⟩
+  · have e : redBook {N-1} {m}.adj u v = {m}.cn u v := by
+      unfold redBook {m}.cn
+      rw [countP_range, countP_range]
+      apply S_congr; intro r _
+      unfold ind
+      by_cases a : r = u
+      · subst a; simp [{m}.adj_irrefl]
+      · by_cases b : r = v
+        · subst b; simp [{m}.adj_irrefl]
+        · simp [a, b]
+    have := {m}.no_red_book u v hu hv he
+    omega
+  · have := {m}.no_blue_book u v hu hv huv he
+    have e : blueBook {N-1} {m}.adj u v = {m}.cnn u v := rfl
+    omega
+
+/-- `{value_name(n)}`: every graph on {N} vertices contains `B_{n-1}` or has a complement
+    containing `B_{n}`, and {N} is the least such number. -/
+theorem book_ramsey_{n} : IsBookRamsey {n-1} {n} {N} :=
+  isBookRamsey_of {n-1} {n} {N} (by decide) upper{n} lower{n}
+"""
+value += '\nend BookRamsey\n'
+open(f'{out}/BookRamsey/Value.lean', 'w').write(value)
+open(f'{out}/BookRamsey.lean', 'w').write(''.join(f'import BookRamsey.{m}.Main\n' for m in modules)
+                                          + 'import BookRamsey.Value\n')
 open(f'{out}/lakefile.toml', 'w').write('name = "BookRamsey"\ndefaultTargets = ["BookRamsey"]\n\n[[lean_lib]]\nname = "BookRamsey"\n')
 open(f'{out}/lean-toolchain', 'w').write('leanprover/lean4:v4.35.0\n')
 check = 'import BookRamsey\n'
 for m in modules:
     for t in ('no_red_book', 'no_blue_book', 'adj_symm', 'adj_irrefl', 'lower_bound'):
         check += f'#print axioms BookRamsey.{m}.{t}\n'
+for n in ns:
+    for t in ('upper', 'lower', 'book_ramsey_'):
+        check += f'#print axioms BookRamsey.{t}{n}\n'
 open(f'{out}/Check.lean', 'w').write(check)

@@ -37,9 +37,9 @@ abstract: >-
   B_57 whose complement has no B_58. The proof reduces both book conditions to 57 inequalities. The
   repository also gives a hand-checkable proof of R(B_66, B_67) = 267, first shown by Chung, Du and
   Wesley in the Station data of 24 August 2026, by a graph over Z_133 whose connection sets are unions
-  of orbits of the cube roots of unity. It holds both papers, Lean 4 kernel checks of both graphs
-  (standard axioms only), independent checks in C and Python, the searches, and dated priority
-  checks.
+  of orbits of the cube roots of unity. It holds both papers, Lean 4 proofs of both values (the
+  graphs checked by the kernel, the upper bound by Goodman's count; standard axioms only),
+  independent checks in C and Python, the searches, and dated priority checks.
 references:
   - type: article
     title: "On Ramsey numbers for books"
