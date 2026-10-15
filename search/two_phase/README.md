@@ -35,6 +35,8 @@ The book conditions reduce to bounds on f(d) = N_AA(d) + N_BB(d), where N_XX(d) 
    no swap helps it raises the weights of the violated bounds by one (breakout), letting them decay
    back toward one with probability 0.2 per raise. On the known-solvable set at n = 40 it found B in
    all six runs, in 2 to 26 seconds each, where `bsa.c` found none in six runs of 60 seconds.
+   On the set that solved n = 46 on Actions it finds B about once per 15 CPU-minutes (restarts every
+   100000 steps), against about once per 80 CPU-minutes for `bsa.c`.
 
 `drive.sh n job minutes minutes_per_A workers` repeats both phases until time runs out
 (`SEL=lp` selects the older first phase). Every
@@ -47,3 +49,15 @@ The workflow `.github/workflows/search-two-phase.yml` runs the jobs listed in `p
 GitHub Actions. Values of n that Turturean already settled (n = 40 and 46 in the first plan) serve
 as calibration of the time a solution takes; the second plan runs n = 46, 52 and 56 for that
 purpose.
+
+Results with `BALG=bwls`, restarts every 10^6 steps, one-hour rounds on four workers (run
+38681705838, jobs 101 to 112):
+
+| n | jobs x rounds | outcome |
+|---|---|---|
+| 52 (known) | 2 x 5 | solved in job 101, round 4 (`bsol_52_1010034`); otherwise least excess 1 |
+| 58 (open before this run) | 5 x 5 | solved in job 106, round 5 (`bsol_58_1060041`, now `data/n58.json`); one other round reached excess 1 |
+| 59 (open) | 5 x 5 | least excess 2 in every round |
+
+With `bsa.c` the same n = 52 search had not found a solution in 4 hours on 4 workers (least
+excess 1).
