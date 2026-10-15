@@ -1,5 +1,4 @@
-{"runs": [
-  {"n": 52, "jobs": 1, "minutes": 240, "perA": 60, "bsteps": 40000000, "t0": 0.5, "t1": 0.5, "hsec": 300},
-  {"n": 56, "jobs": 1, "minutes": 330, "perA": 60, "bsteps": 40000000, "t0": 0.5, "t1": 0.5, "hsec": 300},
-  {"n": 58, "jobs": 5, "minutes": 330, "perA": 60, "bsteps": 40000000, "t0": 0.5, "t1": 0.5, "hsec": 300},
-  {"n": 59, "jobs": 5, "minutes": 330, "perA": 60, "bsteps": 40000000, "t0": 0.5, "t1": 0.5, "hsec": 300}]}
+{"first_job": 101, "runs": [
+  {"n": 52, "jobs": 2, "minutes": 330, "perA": 60, "bsteps": 40000000, "hsec": 300, "balg": "bwls", "bwrs": 1000000},
+  {"n": 58, "jobs": 5, "minutes": 330, "perA": 60, "bsteps": 40000000, "hsec": 300, "balg": "bwls", "bwrs": 1000000},
+  {"n": 59, "jobs": 5, "minutes": 330, "perA": 60, "bsteps": 40000000, "hsec": 300, "balg": "bwls", "bwrs": 1000000}]}

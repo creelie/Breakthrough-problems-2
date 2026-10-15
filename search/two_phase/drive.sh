@@ -4,8 +4,9 @@
 # For each new within-block set A: either SEL=lp, phaseA (Fourier softmin) -> alp.py (LP margin),
 # or SEL=ils (default), `workers` parallel runs of phaseH (iterated local search on the slack-volume
 # score) for HSEC seconds, keeping the best; then `workers` parallel runs of bsa (cross set B)
-# for minutes_per_A minutes.
-# Environment: SEL, HSEC, HR, HTOL, ASTEPS, ALPSTEPS, BSTEPS, T0, T1, MU, PF.
+# for minutes_per_A minutes; with BALG=bwls the cross set is searched by bwls (weighted local search)
+# instead of bsa.
+# Environment: SEL, HSEC, HR, HTOL, ASTEPS, ALPSTEPS, BALG, BSTEPS, T0, T1, MU, PF, BWK, BWTEN, BWRHO, BWRS.
 set -u
 cd "$(dirname "$0")"
 n=$1; job=$2; total=$3; perA=$4; W=$5
@@ -30,8 +31,13 @@ while [ $(( end - $(date +%s) )) -gt 300 ]; do
   left=$(( end - $(date +%s) )); t=$(( perA*60 < left ? perA*60 : left ))
   echo "$(date -u +%H:%M) n $n A seed $seed$g LP margin $m; B search ${t}s on $W workers"
   for w in $(seq 1 $W); do
-    ( cd out && timeout $t ../bsa $n $(( seed*10 + w )) LA_${n}_${seed}.txt LS_${n}_${seed}.txt \
-        ${BSTEPS:-10000000} 1000000 ${T0:-1.0} ${T1:-0.05} ${MU:-0} ${PF:-0.3} > log_${n}_${seed}_${w}.txt ) &
+    if [ "${BALG:-bsa}" = bwls ]; then
+      ( cd out && timeout $(( t + 60 )) ../bwls $n $(( seed*10 + w )) LA_${n}_${seed}.txt $t \
+          ${BWK:-8} ${BWTEN:-5} ${BWRHO:-0.2} ${BWRS:-100000} > log_${n}_${seed}_${w}.txt ) &
+    else
+      ( cd out && timeout $t ../bsa $n $(( seed*10 + w )) LA_${n}_${seed}.txt LS_${n}_${seed}.txt \
+          ${BSTEPS:-10000000} 1000000 ${T0:-1.0} ${T1:-0.05} ${MU:-0} ${PF:-0.3} > log_${n}_${seed}_${w}.txt ) &
+    fi
   done
   wait
   nres=$(cat out/log_${n}_${seed}_*.txt | grep -c '^restart' || true)

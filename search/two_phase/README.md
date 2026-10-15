@@ -28,7 +28,13 @@ The book conditions reduce to bounds on f(d) = N_AA(d) + N_BB(d), where N_XX(d) 
    reaches on them, and the sets it finds make the second phase much shorter (n = 40 solved within
    six minutes on four cores, against 43 minutes with the LP-margin sets).
 2. **Phase B.** For the fixed A, `bsa.c` anneals B against the bounds, with B's autocorrelation
-   pulled toward the LP's slack profile (`mkcap.py`).
+   pulled toward the LP's slack profile (`mkcap.py`). With `BALG=bwls` the second phase is
+   `bwls.c` instead: a weighted local search on pair swaps (remove one element of B, add one
+   outside it). Each bound carries a weight; the search takes the swap that lowers the weighted
+   excess most among the eight best-ranked removals and additions, with a short tabu list, and when
+   no swap helps it raises the weights of the violated bounds by one (breakout), letting them decay
+   back toward one with probability 0.2 per raise. On the known-solvable set at n = 40 it found B in
+   all six runs, in 2 to 26 seconds each, where `bsa.c` found none in six runs of 60 seconds.
 
 `drive.sh n job minutes minutes_per_A workers` repeats both phases until time runs out
 (`SEL=lp` selects the older first phase). Every
