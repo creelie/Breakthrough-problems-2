@@ -3,8 +3,12 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23373628.svg)](https://doi.org/10.5281/zenodo.23373628)
 
 Concept DOI of all versions: [10.5281/zenodo.23373628](https://doi.org/10.5281/zenodo.23373628).
-Release v1.0.1 (n = 67 only) is archived under [10.5281/zenodo.23377549](https://doi.org/10.5281/zenodo.23377549);
-release v1.0.0 ([10.5281/zenodo.23373629](https://doi.org/10.5281/zenodo.23373629)) is superseded.
+
+| Release | Content | Version DOI |
+|---|---|---|
+| v2.0.0 | R(B_57, B_58) = 231 (new) and R(B_66, B_67) = 267, both proved in full in Lean 4 | [10.5281/zenodo.23393415](https://doi.org/10.5281/zenodo.23393415) |
+| v1.0.1 | R(B_66, B_67) = 267 only, crediting Chung, Du and Wesley | [10.5281/zenodo.23377549](https://doi.org/10.5281/zenodo.23377549) |
+| v1.0.0 | superseded by v1.0.1 | [10.5281/zenodo.23373629](https://doi.org/10.5281/zenodo.23373629) |
 
 The book B_k is the graph K_2 + K̄_k: k triangles sharing one edge. Rousseau and Sheehan,
 *On Ramsey numbers for books*, J. Graph Theory 2 (1978), 77–87,
@@ -156,6 +160,9 @@ preprint/                  the n = 67 paper
 dist/                      both papers as PDF, as LaTeX with PNG figures, and as arXiv tarballs
 scripts/                   gen_lean.py, gen_figures.py, build_paper.sh, run_all.sh, audit_axioms.py
 PRIORITY-CHECK.md          the dated priority checks for n = 58 and n = 67
+MasterBookRamsey58_masterzipfinal2.zip  n = 58: paper, Discrete Mathematics manuscript and cover
+                           letter, priority check, and the repository at release v2.0.0
+MasterBookRamsey67_masterzipfinal2.zip  n = 67: the same at release v1.0.0
 ```
 
 To reproduce: `scripts/run_all.sh` (C compiler, Python 3; OR-Tools for the search),
