@@ -8,7 +8,7 @@ authors:
     orcid: "https://orcid.org/0000-0003-0466-750X"
     affiliation: "Formerly, Electro-Gravitational Space Propulsion Laboratory (EGSPL), Bhubaneswar, Odisha 751030, India"
     email: d.bhattacharjee@erl-forschung.de
-version: 2.0.0
+version: 2.1.0
 doi: "10.5281/zenodo.23373628"
 identifiers:
   - type: doi
@@ -23,7 +23,7 @@ identifiers:
   - type: doi
     value: "10.5281/zenodo.23373629"
     description: "Version 1.0.0 (superseded)"
-date-released: 2026-10-15
+date-released: 2026-10-21
 license: MIT
 repository-code: "https://github.com/creelie/Breakthrough-problems-2"
 keywords:
