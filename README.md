@@ -4,9 +4,9 @@
 
 Concept DOI of all versions: [10.5281/zenodo.23373628](https://doi.org/10.5281/zenodo.23373628).
 
-| Release | Content | Version DOI |
+| Release | Content | Archive |
 |---|---|---|
-| v2.1.0 | the journal version of the n = 58 paper, `paper/paper1` (PDF) and `paper/paper2` (tex.zip) | to be added when Zenodo assigns it |
+| v2.1.0 | the journal version of the n = 58 paper, `paper/paper1` (PDF) and `paper/paper2` (tex.zip) | [GitHub release v2.1.0](https://github.com/creelie/Breakthrough-problems-2/releases/tag/v2.1.0) |
 | v2.0.0 | R(B_57, B_58) = 231 (new) and R(B_66, B_67) = 267, both proved in full in Lean 4 | [10.5281/zenodo.23393415](https://doi.org/10.5281/zenodo.23393415) |
 | v1.0.1 | R(B_66, B_67) = 267 only, crediting Chung, Du and Wesley | [10.5281/zenodo.23377549](https://doi.org/10.5281/zenodo.23377549) |
 | v1.0.0 | superseded by v1.0.1 | [10.5281/zenodo.23373629](https://doi.org/10.5281/zenodo.23373629) |
